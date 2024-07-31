@@ -30,7 +30,7 @@ public class TodoRepositoryTests {
 
     @Test
     public void testInsert(){
-        for(int i=0; i<100; i++){
+        for(int i=100; i<103; i++){
             final Todo todo = Todo.builder()
                     .title("Title.."+i)
                     .content("Content..."+ i)
@@ -82,9 +82,9 @@ public class TodoRepositoryTests {
         log.info(result.getContent());
     }
 
-    @Test
-    public void testSearch1(){
-        todoRepository.search1();
-    }
+//    @Test
+//    public void testSearch1(){
+//        todoRepository.search1();
+//    }
 
 }
