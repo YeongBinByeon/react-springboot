@@ -28,7 +28,7 @@ public class ProductController {
 
         List<String> uploadedFileNames = fileUtil.saveFiles(files);
 
-        productDTO.setUploadedFileNames(uploadedFileNames);
+        productDTO.setUploadFileNames(uploadedFileNames);
 
         log.info(uploadedFileNames);
 
