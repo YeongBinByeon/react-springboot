@@ -8,6 +8,9 @@ import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.ProductDTO;
 
+import java.util.List;
+import java.util.UUID;
+
 @SpringBootTest
 @Log4j2
 public class ProductServiceTests {
@@ -22,5 +25,22 @@ public class ProductServiceTests {
         PageResponseDTO<ProductDTO> responseDTO = productService.getList(pageRequestDTO);
 
         log.info(responseDTO.getDtoList());
+    }
+
+    @Test
+    public void testRegister(){
+        ProductDTO productDTO = ProductDTO.builder()
+                .pname("새로운 상품")
+                .pdesc("신규 추가 상품입니다")
+                .price(1000)
+                .build();
+
+        //uuid가 있어야 함
+        productDTO.setUploadFileNames(
+                List.of(UUID.randomUUID()+"_"+"Test1.jpg",
+                        UUID.randomUUID()+"_"+"Test2.jpg")
+        );
+
+        productService.register(productDTO);
     }
 }
