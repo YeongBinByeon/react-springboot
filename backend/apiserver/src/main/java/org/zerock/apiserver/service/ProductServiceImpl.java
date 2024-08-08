@@ -91,6 +91,33 @@ public class ProductServiceImpl implements ProductService{
         return entityToDTO(product);
     }
 
+    @Override
+    public void modify(ProductDTO productDTO) {
+        // 조회
+        Optional<Product> result = productRepository.findById(productDTO.getPno());
+
+        Product product = result.orElseThrow();
+        // 변경 내용 반영
+        product.changePrice(productDTO.getPrice());
+        product.changeName(productDTO.getPname());
+        product.changeDesc(productDTO.getPdesc());
+        product.changeDel(productDTO.isDelFlag());
+
+        // 이미지 처리
+        List<String> uploadFileNames = productDTO.getUploadFileNames();
+
+        product.clearList();
+
+        if(uploadFileNames != null && !uploadFileNames.isEmpty()){
+            uploadFileNames.forEach(uploadName -> {
+                product.addImageString(uploadName);
+            });
+        }
+
+        // 저장
+        productRepository.save(product);
+    }
+
     private ProductDTO entityToDTO(Product product){
 
         ProductDTO productDTO = ProductDTO.builder()
