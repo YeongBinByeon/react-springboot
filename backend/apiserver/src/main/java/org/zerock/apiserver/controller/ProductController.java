@@ -25,20 +25,21 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/")
-    public Map<String, String> register(ProductDTO productDTO){
-        log.info("register: " + productDTO);
-
-        List<MultipartFile> files = productDTO.getFiles();
-
-        List<String> uploadedFileNames = fileUtil.saveFiles(files);
-
-        productDTO.setUploadFileNames(uploadedFileNames);
-
-        log.info(uploadedFileNames);
-
-        return Map.of("RESULT", "SUCCESS");
-    }
+    // 섹션 4 - 서비스계층과 컨트롤러(2) - 상품조회 여기서 아래와 거의 비슷한 메서드를 새로 만들었는데, 왠진 모르겠음
+//    @PostMapping("/")
+//    public Map<String, String> register(ProductDTO productDTO){
+//        log.info("register: " + productDTO);
+//
+//        List<MultipartFile> files = productDTO.getFiles();
+//
+//        List<String> uploadedFileNames = fileUtil.saveFiles(files);
+//
+//        productDTO.setUploadFileNames(uploadedFileNames);
+//
+//        log.info(uploadedFileNames);
+//
+//        return Map.of("RESULT", "SUCCESS");
+//    }
 
     @GetMapping("/view/{fileName}")
     public ResponseEntity<Resource> viewFileGET(@PathVariable("fileName") String fileName){
@@ -51,4 +52,24 @@ public class ProductController {
         return productService.getList(pageRequestDTO);
     }
 
+    @PostMapping("/")
+    public Map<String, Long> register(ProductDTO productDTO){
+        List<MultipartFile> files = productDTO.getFiles();
+
+        List<String> uploadFileNames = fileUtil.saveFiles(files);
+
+        productDTO.setUploadFileNames(uploadFileNames);
+
+        log.info(uploadFileNames);
+
+        Long pno = productService.register(productDTO);
+
+        return Map.of("result", pno);
+    }
+
+    @GetMapping("/{pno}")
+    public ProductDTO read(@PathVariable("pno") Long pno){
+
+        return productService.get(pno);
+    }
 }
