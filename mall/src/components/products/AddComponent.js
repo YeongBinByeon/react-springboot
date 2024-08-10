@@ -1,5 +1,8 @@
 import React, { useRef, useState } from "react";
 import { postAdd } from "../../api/productsApi";
+import FetchingModal from "../common/FetchingModal";
+import ResultModal from "../common/ResultModal";
+import useCustomMove from "../../hooks/useCustomMove";
 
 const initState = {
   pname: "",
@@ -15,6 +18,11 @@ function AddComponent(props) {
 
   // useRef() : <input type='file'>의 value 속성값을 읽어 옴
   const uploadRef = useRef();
+
+  const [fetching, setFetching] = useState(false);
+  const [result, setResult] = useState(false);
+
+  const { moveToList } = useCustomMove();
 
   // multipart/form-data FormData()
 
@@ -41,7 +49,17 @@ function AddComponent(props) {
 
     console.log(formData);
 
-    postAdd(formData);
+    setFetching(true);
+
+    postAdd(formData).then((data) => {
+      setFetching(false);
+      setResult(data.result);
+    });
+  };
+
+  const closeModal = () => {
+    setResult(null);
+    moveToList({ page: 1 });
   };
 
   return (
@@ -106,6 +124,18 @@ function AddComponent(props) {
           </button>
         </div>
       </div>
+
+      {fetching ? <FetchingModal /> : <></>}
+
+      {result ? (
+        <ResultModal
+          callbackFn={closeModal}
+          title={"Product Add Result"}
+          content={`${result}번 상품 등록 완료`}
+        ></ResultModal>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
