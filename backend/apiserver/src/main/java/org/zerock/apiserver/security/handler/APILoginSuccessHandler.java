@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.zerock.apiserver.dto.MemberDTO;
+import org.zerock.apiserver.util.JWTUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,8 +28,11 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, Object> claims = memberDTO.getClaims();
 
-        claims.put("accessToken", "");
-        claims.put("refreshToken", "");
+        String accessToken = JWTUtil.generateToken(claims, 10);
+        String refreshToken = JWTUtil.generateToken(claims, 60*24);
+
+        claims.put("accessToken", accessToken);
+        claims.put("refreshToken", refreshToken);
 
         Gson gson = new Gson();
 
